@@ -16,25 +16,36 @@ public class ReimbursementPojo {
 	private boolean requestApproved;
 	private String dateOfRequest;
 	private String dateResolved;
-	private byte receiptImage;
+	private int imageId;
+	private String imageName;
+	private String imageType;
+	private byte[] imageData;
 	
-	
-	// Constructor for testing Pending Requests
-	public ReimbursementPojo(int reimbusermentId, int requestingEmployeeId, double reimbursementAmount, boolean reimbursementPending) {
-		this.reimbursementId = reimbusermentId;
+
+	// Constructor for adding Pending Requests
+	public ReimbursementPojo(int requestingEmployeeId, double reimbursementAmount, boolean reimbursementPending,
+			String imageName, String imageType, byte[] imageData) {
 		this.requestingEmployeeId = requestingEmployeeId;
 		this.reimbursementAmount = reimbursementAmount;
 		this.reimbursementPending = reimbursementPending;
+		this.imageName = imageName;
+		this.imageType = imageType;
+		this.imageData = imageData;
 	}
-
-	// Constructor for Pending Requests
+		
+	// Constructor for Returning Pending Requests
 	public ReimbursementPojo(int reimbursementId, int requestingEmployeeId, double reimbursementAmount,
-			boolean reimbursementPending, String dateOfRequest, byte receiptImage) {
+			boolean reimbursementPending, String dateOfRequest, int imageId, String imageName, String imageType,
+			byte[] imageData) {
 		this.reimbursementId = reimbursementId;
 		this.requestingEmployeeId = requestingEmployeeId;
 		this.reimbursementAmount = reimbursementAmount;
 		this.reimbursementPending = reimbursementPending;
 		this.dateOfRequest = dateOfRequest;
+		this.imageId = imageId;
+		this.imageName = imageName;
+		this.imageType = imageType;
+		this.imageData = imageData;
 	}
 	
 	// Constructor for adding Resolved Requests
@@ -42,17 +53,5 @@ public class ReimbursementPojo {
 		this.reimbursementId = reimbursementId;
 		this.requestApproved = requestApproved;
 	}
-	// Constructor for testing Resolved Requests
-	public ReimbursementPojo(int resolvedReimbusementId, int reimbursementId, int requestingEmployeeId,
-			double reimbursementAmount, boolean reimbursementPending, boolean requestApproved) {
-		this.resolvedReimbursementId = resolvedReimbusementId;
-		this.reimbursementId = reimbursementId;
-		this.requestingEmployeeId = requestingEmployeeId;
-		this.reimbursementAmount = reimbursementAmount;
-		this.reimbursementPending = reimbursementPending;
-		this.requestApproved = requestApproved;
-	}
-
-
-
+	
 }

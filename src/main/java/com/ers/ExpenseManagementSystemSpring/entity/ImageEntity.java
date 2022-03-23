@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -13,35 +14,46 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "resolved_reimbursements")
-public class ResolvedReimbursementEntity {
+@Entity
+@Table(name = "image_details")
+public class ImageEntity {
 	
+
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "resolved_reimbursement_id")
-	private int resolvedReimbursementId;
-
+	@Column(name = "image_id")
+	private int imageId;
+	
 	@OneToOne
 	@JoinColumn(name = "reimbursement_id")
 	private ReimbursementEntity reimbursementEntity;
 	
-	@Column(name = "request_approved")
-	private boolean requestApproved;
-
-	@Column(name = "date_resolved")
-	private String dateResolved;
+	@Column(name = "image_name")
+	private String imageName;
 	
-	public ResolvedReimbursementEntity( boolean requestApproved2) {
-
+	@Column(name = "image_type")
+	private String imageType;
+	
+	@Lob
+	private byte[] imageData;
+	
+	// Constructor for new images
+		public ImageEntity(int imageName2, int imageType2, byte[] imageData2) {
+		
 	}
 
-	public ResolvedReimbursementEntity(int reimbursementId, boolean requestApproved) {
+	public ImageEntity(int reimbursementId, String imageName, String imageType,
+			byte[] imageData) {
 		this.reimbursementEntity = new ReimbursementEntity(reimbursementId);
-		this.requestApproved = requestApproved;
+		this.imageName = imageName;
+		this.imageType = imageType;
+		this.imageData = imageData;
 	}
+	
+	
 	
 }

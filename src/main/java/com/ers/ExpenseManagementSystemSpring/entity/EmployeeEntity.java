@@ -18,6 +18,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "employee_details")
 public class EmployeeEntity {
 	
+	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "employee_id")
@@ -40,4 +42,7 @@ public class EmployeeEntity {
 
 	@Column(name = "employee_image_url")
 	private String employeeImageUrl;
+	
+	public EmployeeEntity(int requestingEmployeeId) {
+	}
 }

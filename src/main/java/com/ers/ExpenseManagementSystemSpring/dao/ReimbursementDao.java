@@ -1,7 +1,6 @@
 package com.ers.ExpenseManagementSystemSpring.dao;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,11 +13,14 @@ import com.ers.ExpenseManagementSystemSpring.entity.ReimbursementEntity;
 public interface ReimbursementDao extends JpaRepository<ReimbursementEntity, Integer> {
 	
 	// VIEW PENDING REIMBUSEMENT REQUEST FOR LOGGED IN EMPLOYEE
-	@Query("SELECT * FROM reimbursement_details WHERE requesting_employee_id= :employeeId AND reimbursement_pending='t'")
+	@Query("FROM ReimbursementEntity r WHERE r.employeeEntity.employeeId LIKE :employeeId AND r.reimbursementPending LIKE 't'")
 	public List<ReimbursementEntity> viewPendingRequests(@Param("employeeId") int employeeId);
 	
-	// READ ALL VALUES FROM PENDING REQUESTS TABLE
-	@Query("SELECT * FROM reimbursement_details WHERE reimbursement_pending='t'")
-	public List<ReimbursementEntity> viewAllPendingRequests();
+	// VIEW RESOLVED REIMBURSEMENT REQUESTS FOR LOGGED IN EMPLOYEE
+	@Query("FROM ReimbursementEntity r WHERE r.employeeEntity.employeeId LIKE :employeeId AND r.reimbursementPending LIKE 'f'")
+	public List<ReimbursementEntity> findByEmployeeId(@Param("employeeId") int employeeId);
+	
+	// VIEW ALL PENDING REQUESTS OR ALL RESOLVED REQUESTS
+	public List<ReimbursementEntity> findByReimbursementPending(boolean reimbursementPending);
 	
 }
