@@ -32,6 +32,14 @@ CREATE TABLE resolved_reimbursements(resolved_reimbursement_id INT GENERATED ALW
                             request_approved BOOLEAN, 
                             date_resolved DATE NOT NULL DEFAULT CURRENT_DATE,
                             PRIMARY KEY(reimbursement_id));
+                            
+CREATE TABLE image_details(image_id INT GENERATED ALWAYS AS IDENTITY (START WITH 100 INCREMENT BY 1), 
+							reimbursement_id INT,
+							image_name VARCHAR(20),
+							image_type VARCHAR(20),
+							image_data BYTEA,
+							PRIMARY KEY(image_id));
+							
 
 ALTER TABLE reimbursement_details ADD 
    CONSTRAINT fk_requesting_employee_id 
@@ -40,6 +48,12 @@ ALTER TABLE reimbursement_details ADD
       ON DELETE CASCADE;
 
 ALTER TABLE resolved_reimbursements ADD 
+   CONSTRAINT fk_reimbursement_id 
+      FOREIGN KEY (reimbursement_id)
+      REFERENCES reimbursement_details (reimbursement_id)
+      ON DELETE CASCADE;
+
+ALTER TABLE image_details ADD 
    CONSTRAINT fk_reimbursement_id 
       FOREIGN KEY (reimbursement_id)
       REFERENCES reimbursement_details (reimbursement_id)
