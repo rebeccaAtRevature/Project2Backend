@@ -13,6 +13,7 @@ import com.ers.ExpenseManagementSystemSpring.dao.ImageDao;
 import com.ers.ExpenseManagementSystemSpring.dao.ReimbursementDao;
 import com.ers.ExpenseManagementSystemSpring.dao.ResolvedReimbursementDao;
 import com.ers.ExpenseManagementSystemSpring.entity.EmployeeEntity;
+import com.ers.ExpenseManagementSystemSpring.entity.ImageEntity;
 import com.ers.ExpenseManagementSystemSpring.entity.ReimbursementEntity;
 import com.ers.ExpenseManagementSystemSpring.entity.ResolvedReimbursementEntity;
 import com.ers.ExpenseManagementSystemSpring.pojo.ReimbursementPojo;
@@ -34,12 +35,17 @@ public class ReimbursementServiceImpl implements ReimbursementService {
 		log.info("Entering submitRequest() in Service Layer");
 		ReimbursementEntity reimbursementEntity = new ReimbursementEntity(new EmployeeEntity(reimbursementPojo.getRequestingEmployeeId()),reimbursementPojo.getReimbursementAmount(),reimbursementPojo.isReimbursementPending());
 		reimbursementDao.saveAndFlush(reimbursementEntity);
-		ImageEntity imageEntity = new ImageEntity(reimbursementPojo.getReimbursementId(),reimbursementPojo.getImageName(),reimbursementPojo.getImageType(),reimbursementPojo.getImageData())
-		imageDao.
+		ImageEntity imageEntity = new ImageEntity(reimbursementPojo.getReimbursementId(),reimbursementPojo.getImageName(),reimbursementPojo.getImageType(),reimbursementPojo.getImageData());
+		imageDao.saveAndFlush(imageEntity);
 		reimbursementPojo = new ReimbursementPojo(reimbursementEntity.getReimbursementId(), 
 				reimbursementEntity.getEmployeeEntity().getEmployeeId(), 
 				reimbursementEntity.getReimbursementAmount(),
-				reimbursementEntity.isReimbursementPending(),);
+				reimbursementEntity.isReimbursementPending(),
+				reimbursementEntity.getDateOfRequest(),
+				reimbursementEntity.getImageEntity().getImageId(),
+				reimbursementEntity.getImageEntity().getImageName(),
+				reimbursementEntity.getImageEntity().getImageType(),
+				reimbursementEntity.getImageEntity().getImageData());
 		log.info("Exiting submitRequest() in Service Layer");	
 		return reimbursementPojo;		
 	}
@@ -68,9 +74,17 @@ public class ReimbursementServiceImpl implements ReimbursementService {
 	@Override
 	public ReimbursementPojo updatePendingRequest(ReimbursementPojo reimbursementPojo) {
 		log.info("Entered updatePendingRequest() in Service Layer");
-		ReimbursementEntity reimbursementEntity = new ReimbursementEntity(reimbursementPojo.getReimbursementId(),reimbursementPojo.getRequestingEmployeeId(),reimbursementPojo.getReimbursementAmount(),false,reimbursementPojo.getDateOfRequest());
+		ReimbursementEntity reimbursementEntity = new ReimbursementEntity(reimbursementPojo.getReimbursementId(), reimbursementPojo.getRequestingEmployeeId(),reimbursementPojo.getReimbursementAmount(),false,reimbursementPojo.getDateOfRequest());
 		reimbursementDao.save(reimbursementEntity);
-		reimbursementPojo= new ReimbursementPojo(reimbursementEntity.getReimbursementId(), reimbursementEntity.getRequestingEmployeeId(), reimbursementEntity.getReimbursementAmount(),reimbursementPojo.isReimbursementPending(),reimbursementPojo.getDateOfRequest(),reimbursementPojo.getReceiptImage());
+		reimbursementPojo= new ReimbursementPojo(reimbursementEntity.getReimbursementId(), 
+				reimbursementEntity.getEmployeeEntity().getEmployeeId(), 
+				reimbursementEntity.getReimbursementAmount(),
+				reimbursementEntity.isReimbursementPending(),
+				reimbursementEntity.getDateOfRequest(),
+				reimbursementEntity.getImageEntity().getImageId(),
+				reimbursementEntity.getImageEntity().getImageName(),
+				reimbursementEntity.getImageEntity().getImageType(),
+				reimbursementEntity.getImageEntity().getImageData());
 		log.info("Exited updatePendingRequest() in Service Layer");
 		return reimbursementPojo;
 	}
@@ -81,7 +95,15 @@ public class ReimbursementServiceImpl implements ReimbursementService {
 		List<ReimbursementPojo> allPendingRequestPojo = new ArrayList<ReimbursementPojo>();
 		List<ReimbursementEntity> allPendingRequestEntity = reimbursementDao.viewPendingRequests(employeeId);
 		allPendingRequestEntity.forEach((reimbursementEntity) -> {
-			ReimbursementPojo reimbursementPojo = new ReimbursementPojo(reimbursementEntity.getReimbursementId(), reimbursementEntity.getRequestingEmployeeId(), reimbursementEntity.getReimbursementAmount(),true);
+			ReimbursementPojo reimbursementPojo= new ReimbursementPojo(reimbursementEntity.getReimbursementId(), 
+					reimbursementEntity.getEmployeeEntity().getEmployeeId(), 
+					reimbursementEntity.getReimbursementAmount(),
+					reimbursementEntity.isReimbursementPending(),
+					reimbursementEntity.getDateOfRequest(),
+					reimbursementEntity.getImageEntity().getImageId(),
+					reimbursementEntity.getImageEntity().getImageName(),
+					reimbursementEntity.getImageEntity().getImageType(),
+					reimbursementEntity.getImageEntity().getImageData());
 			allPendingRequestPojo.add(reimbursementPojo);
 		});
 		log.info("Exiting viewPendingRequests in Service Layer");
@@ -90,8 +112,26 @@ public class ReimbursementServiceImpl implements ReimbursementService {
 	// VIEW RESOLVED REIMBURSEMENT REQUESTS FOR LOGGED IN EMPLOYEE
 	@Override
 	public List<ReimbursementPojo> viewResolvedRequests(int employeeId) {
-		// TODO Auto-generated method stub
-		return null;
+		log.info("Entering viewResolvedRequests in Service Layer");
+		List<ReimbursementPojo> allResolvedRequestPojo = new ArrayList<ReimbursementPojo>();
+		List<ResolvedReimbursementEntity> allResolvedRequestEntity = resolvedReimbursementDao.viewResolvedRequests(employeeId);
+		allResolvedRequestEntity.forEach((resolvedReimbursementEntity) -> {
+			ReimbursementPojo reimbursementPojo = new ReimbursementPojo( resolvedReimbursementEntity.getReimbursementEntity().getReimbursementId(),
+					resolvedReimbursementEntity.getResolvedReimbursementId(),
+					resolvedReimbursementEntity.getReimbursementEntity().getEmployeeEntity().getEmployeeId(), 
+					resolvedReimbursementEntity.getReimbursementEntity().getReimbursementAmount(), 
+					resolvedReimbursementEntity.getReimbursementEntity().isReimbursementPending(), 
+					resolvedReimbursementEntity.isRequestApproved(), 
+					resolvedReimbursementEntity.getReimbursementEntity().getDateOfRequest(), 
+					resolvedReimbursementEntity.getDateResolved(),
+					resolvedReimbursementEntity.getReimbursementEntity().getImageEntity().getImageId(),
+					resolvedReimbursementEntity.getReimbursementEntity().getImageEntity().getImageName(),
+					resolvedReimbursementEntity.getReimbursementEntity().getImageEntity().getImageType(),
+					resolvedReimbursementEntity.getReimbursementEntity().getImageEntity().getImageData());
+			allResolvedRequestPojo.add(reimbursementPojo);
+		});
+		log.info("Exiting viewResolvedRequests in Service Layer");
+		return allResolvedRequestPojo;
 	}
 	// READ A SPECIFIC PENDING REIMBURSEMENT FROM TABLE
 	@Override
@@ -101,7 +141,15 @@ public class ReimbursementServiceImpl implements ReimbursementService {
 		ReimbursementPojo reimbursementPojo = null;
 		if(optional.isPresent()) {
 			ReimbursementEntity reimbursementEntity = optional.get();
-			reimbursementPojo = new ReimbursementPojo(reimbursementEntity.getReimbursementId(), reimbursementEntity.getRequestingEmployeeId(), reimbursementEntity.getReimbursementAmount(),true);
+			reimbursementPojo = new ReimbursementPojo(reimbursementEntity.getReimbursementId(), 
+					reimbursementEntity.getEmployeeEntity().getEmployeeId(), 
+					reimbursementEntity.getReimbursementAmount(),
+					reimbursementEntity.isReimbursementPending(),
+					reimbursementEntity.getDateOfRequest(),
+					reimbursementEntity.getImageEntity().getImageId(),
+					reimbursementEntity.getImageEntity().getImageName(),
+					reimbursementEntity.getImageEntity().getImageType(),
+					reimbursementEntity.getImageEntity().getImageData());
 		}
 		log.info("Exiting readPendingRequest() in Service Layer");
 		return reimbursementPojo;
@@ -113,7 +161,15 @@ public class ReimbursementServiceImpl implements ReimbursementService {
 		List<ReimbursementPojo> allPendingRequestPojo = new ArrayList<ReimbursementPojo>();
 		List<ReimbursementEntity> allPendingRequestEntity = reimbursementDao.findByReimbursementPending(true);
 		allPendingRequestEntity.forEach((reimbursementEntity) -> {
-			ReimbursementPojo reimbursementPojo = new ReimbursementPojo(reimbursementEntity.getReimbursementId(), reimbursementEntity.getRequestingEmployeeId(), reimbursementEntity.getReimbursementAmount(),true);
+			ReimbursementPojo reimbursementPojo= new ReimbursementPojo(reimbursementEntity.getReimbursementId(), 
+					reimbursementEntity.getEmployeeEntity().getEmployeeId(), 
+					reimbursementEntity.getReimbursementAmount(),
+					reimbursementEntity.isReimbursementPending(),
+					reimbursementEntity.getDateOfRequest(),
+					reimbursementEntity.getImageEntity().getImageId(),
+					reimbursementEntity.getImageEntity().getImageName(),
+					reimbursementEntity.getImageEntity().getImageType(),
+					reimbursementEntity.getImageEntity().getImageData());
 			allPendingRequestPojo.add(reimbursementPojo);
 		});
 		log.info("Exiting viewAllPendingRequests() in Service Layer");
@@ -122,21 +178,59 @@ public class ReimbursementServiceImpl implements ReimbursementService {
 	// READ ALL VALUES FROM RESOLVED REQUESTS TABLE
 	@Override
 	public List<ReimbursementPojo> viewAllResolvedRequests() {
-		// TODO Auto-generated method stub
-		return null;
+		List<ReimbursementPojo> allResolvedRequestPojo = new ArrayList<ReimbursementPojo>();
+		List<ReimbursementEntity> allResolvedRequestEntity = reimbursementDao.findByReimbursementPending(false);
+		allResolvedRequestEntity.forEach((reimbursementEntity) -> {
+			ReimbursementPojo reimbursementPojo = new ReimbursementPojo( reimbursementEntity.getReimbursementId(),
+					reimbursementEntity.getResolvedReimbursementEntity().getResolvedReimbursementId(),
+					reimbursementEntity.getEmployeeEntity().getEmployeeId(), 
+					reimbursementEntity.getReimbursementAmount(), 
+					reimbursementEntity.isReimbursementPending(), 
+					reimbursementEntity.getResolvedReimbursementEntity().isRequestApproved(), 
+					reimbursementEntity.getDateOfRequest(), 
+					reimbursementEntity.getResolvedReimbursementEntity().getDateResolved(),
+					reimbursementEntity.getImageEntity().getImageId(),
+					reimbursementEntity.getImageEntity().getImageName(),
+					reimbursementEntity.getImageEntity().getImageType(),
+					reimbursementEntity.getImageEntity().getImageData());
+			allResolvedRequestPojo.add(reimbursementPojo);
+		});
+		return allResolvedRequestPojo;
 	}
 
 	// READ ALL PENDING AND RESOLVED REIMBURSEMENTS FOR ANY SINGLE EMPLOYEE
 	@Override
 	public List<ReimbursementPojo> viewAllRequests(int employeeId) {
-		// TODO Auto-generated method stub
-		return null;
+		List<ReimbursementPojo> allRequestPojo = new ArrayList<ReimbursementPojo>();
+		List<ReimbursementEntity> allRequestEntity = reimbursementDao.findByEmployeeId(employeeId);
+		allRequestEntity.forEach((reimbursementEntity) -> {
+			ReimbursementPojo reimbursementPojo = new ReimbursementPojo( reimbursementEntity.getReimbursementId(),
+					reimbursementEntity.getResolvedReimbursementEntity().getResolvedReimbursementId(),
+					reimbursementEntity.getEmployeeEntity().getEmployeeId(), 
+					reimbursementEntity.getReimbursementAmount(), 
+					reimbursementEntity.isReimbursementPending(), 
+					reimbursementEntity.getResolvedReimbursementEntity().isRequestApproved(), 
+					reimbursementEntity.getDateOfRequest(), 
+					reimbursementEntity.getResolvedReimbursementEntity().getDateResolved(),
+					reimbursementEntity.getImageEntity().getImageId(),
+					reimbursementEntity.getImageEntity().getImageName(),
+					reimbursementEntity.getImageEntity().getImageType(),
+					reimbursementEntity.getImageEntity().getImageData());
+			allRequestPojo.add(reimbursementPojo);
+		});
+		return allRequestPojo;
 	}
 	// APPROVE OR DENY PENDING REIMBURSEMENT REQUESTS
 	@Override
 	@Transactional
 	public ReimbursementPojo approveOrDeny(ReimbursementPojo reimbursementPojo) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		// add to resolved request table
+		ReimbursementPojo returnReimbursement = addResolvedRequest(reimbursementPojo);
+		
+		// update reimbursement details table
+		returnReimbursement = updatePendingRequest(reimbursementPojo);
+		
+		return returnReimbursement;
 	}
 }

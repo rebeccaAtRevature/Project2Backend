@@ -42,4 +42,24 @@ public class ReimbursementController {
     public List<ReimbursementPojo> viewAllPendingRequests() {
         return reimbursementService.viewAllPendingRequests();
     }
+    // VIEW RESOLVED REIMBURSEMENT REQUESTS FOR LOGGED IN EMPLOYEE
+    @GetMapping("r-reimbursements/{employeeId}")
+    List<ReimbursementPojo> viewResolvedRequests(@PathVariable("employeeId") int employeeId) {
+        return reimbursementService.viewResolvedRequests(employeeId);
+    }
+    // APPROVE OR DENY PENDING REIMBURSEMENT REQUESTS
+    @PostMapping("reimbursement")
+    public ReimbursementPojo approveOrDeny(@RequestBody ReimbursementPojo reimbursementPojo) {
+        return reimbursementService.approveOrDeny(reimbursementPojo);
+    }
+    // READ ALL VALUES FROM RESOLVED REQUESTS TABLE
+    @GetMapping("r-reimbursements")
+    public List<ReimbursementPojo> viewAllResolvedRequests() {
+        return reimbursementService.viewAllResolvedRequests();
+    }
+    // READ ALL PENDING AND RESOLVED REIMBURSEMENTS FOR ANY SINGLE EMPLOYEE
+    @GetMapping("reimbursements/{employeeId}")
+    public List<ReimbursementPojo> viewAllRequests(@PathVariable("employeeId") int employeeId) {
+        return reimbursementService.viewAllRequests(employeeId);
+    }
 }

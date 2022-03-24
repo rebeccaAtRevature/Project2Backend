@@ -22,7 +22,7 @@ public class EmployeeController {
 	@Autowired
 	EmployeeService employeeService;
 	// LOGIN
-    @GetMapping("Employees/{employeeId}/{employeePassword}")
+    @GetMapping("employees/{employeeId}/{employeePassword}")
     public EmployeePojo employeeLogin(@PathVariable("employeeId") int employeeId, @PathVariable("employeePassword") String employeePassword) {
         return employeeService.employeeLogin(employeeId, employeePassword);
     }

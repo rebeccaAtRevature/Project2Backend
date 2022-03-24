@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ers.ExpenseManagementSystemSpring.pojo.ReimbursementPojo;
-import com.ers.ExpenseManagementSystemSpring.service.ResolvedReimbursementService;
+import com.ers.ExpenseManagementSystemSpring.service.ReimbursementService;
 
 @CrossOrigin
 @RestController
@@ -20,26 +20,26 @@ import com.ers.ExpenseManagementSystemSpring.service.ResolvedReimbursementServic
 public class ResolvedReimbursementController {
 	
 	@Autowired
-	ResolvedReimbursementService resolvedReimbursementService;
+	ReimbursementService reimbursementService;
 	
-    // VIEW RESOLVED REIMBURSEMENT REQUESTS FOR LOGGED IN EMPLOYEE
-    @GetMapping("r-reimbursements/{employeeId}")
-    List<ReimbursementPojo> viewResolvedRequests(@PathVariable("employeeId") int employeeId) {
-        return resolvedReimbursementService.viewResolvedRequests(employeeId);
-    }
-    // APPROVE OR DENY PENDING REIMBURSEMENT REQUESTS
-    @PostMapping("reimbursement")
-    public ReimbursementPojo approveOrDeny(@RequestBody ReimbursementPojo reimbursementPojo) {
-        return resolvedReimbursementService.approveOrDeny(reimbursementPojo);
-    }
-    // READ ALL VALUES FROM RESOLVED REQUESTS TABLE
-    @GetMapping("r-reimbursements")
-    public List<ReimbursementPojo> viewAllResolvedRequests() {
-        return resolvedReimbursementService.viewAllResolvedRequests();
-    }
-    // READ ALL PENDING AND RESOLVED REIMBURSEMENTS FOR ANY SINGLE EMPLOYEE
-    @GetMapping("reimbursements/{employeeId}")
-    public List<ReimbursementPojo> viewAllRequests(@PathVariable("employeeId") int employeeId) {
-        return resolvedReimbursementService.viewAllRequests(employeeId);
-    }
+//    // VIEW RESOLVED REIMBURSEMENT REQUESTS FOR LOGGED IN EMPLOYEE
+//    @GetMapping("r-reimbursements/{employeeId}")
+//    List<ReimbursementPojo> viewResolvedRequests(@PathVariable("employeeId") int employeeId) {
+//        return reimbursementService.viewResolvedRequests(employeeId);
+//    }
+//    // APPROVE OR DENY PENDING REIMBURSEMENT REQUESTS
+//    @PostMapping("reimbursement")
+//    public ReimbursementPojo approveOrDeny(@RequestBody ReimbursementPojo reimbursementPojo) {
+//        return reimbursementService.approveOrDeny(reimbursementPojo);
+//    }
+//    // READ ALL VALUES FROM RESOLVED REQUESTS TABLE
+//    @GetMapping("r-reimbursements")
+//    public List<ReimbursementPojo> viewAllResolvedRequests() {
+//        return reimbursementService.viewAllResolvedRequests();
+//    }
+//    // READ ALL PENDING AND RESOLVED REIMBURSEMENTS FOR ANY SINGLE EMPLOYEE
+//    @GetMapping("reimbursements/{employeeId}")
+//    public List<ReimbursementPojo> viewAllRequests(@PathVariable("employeeId") int employeeId) {
+//        return reimbursementService.viewAllRequests(employeeId);
+//    }
 }

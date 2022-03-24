@@ -43,7 +43,7 @@ public class ReimbursementEntity {
 	@OneToOne(mappedBy = "reimbursementEntity")
 	private ResolvedReimbursementEntity resolvedReimbursementEntity;
 	
-	@OneToOne(mappedBy = "imageEntity")
+	@OneToOne(mappedBy = "reimbursementEntity")
 	private ImageEntity imageEntity;
 	
 	// Constructor for adding Pending Requests
@@ -56,6 +56,18 @@ public class ReimbursementEntity {
 	public ReimbursementEntity(int reimbursementId) {
 		this.reimbursementId = reimbursementId;
 	}
+
+	public ReimbursementEntity(int reimbursementId, int employeeId, double reimbursementAmount,
+			boolean reimbursementPending, String dateOfRequest) {
+		super();
+		this.reimbursementId = reimbursementId;
+		this.employeeEntity = new EmployeeEntity(employeeId);
+		this.reimbursementAmount = reimbursementAmount;
+		this.reimbursementPending = reimbursementPending;
+		this.dateOfRequest = dateOfRequest;
+	}
+
+	
 	
 	
 	
