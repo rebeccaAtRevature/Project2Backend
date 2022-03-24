@@ -56,6 +56,18 @@ public class ReimbursementEntity {
 	public ReimbursementEntity(int reimbursementId) {
 		this.reimbursementId = reimbursementId;
 	}
+
+	public ReimbursementEntity(int reimbursementId, int employeeId, double reimbursementAmount,
+			boolean reimbursementPending, String dateOfRequest) {
+		super();
+		this.reimbursementId = reimbursementId;
+		this.employeeEntity = new EmployeeEntity(employeeId);
+		this.reimbursementAmount = reimbursementAmount;
+		this.reimbursementPending = reimbursementPending;
+		this.dateOfRequest = dateOfRequest;
+	}
+
+	
 	
 	
 	

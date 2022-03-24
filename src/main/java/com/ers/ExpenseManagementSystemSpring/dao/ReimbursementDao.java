@@ -16,11 +16,11 @@ public interface ReimbursementDao extends JpaRepository<ReimbursementEntity, Int
 	@Query("FROM ReimbursementEntity r WHERE r.employeeEntity.employeeId LIKE :employeeId AND r.reimbursementPending LIKE 't'")
 	public List<ReimbursementEntity> viewPendingRequests(@Param("employeeId") int employeeId);
 	
-	// VIEW RESOLVED REIMBURSEMENT REQUESTS FOR LOGGED IN EMPLOYEE
-	@Query("FROM ReimbursementEntity r WHERE r.employeeEntity.employeeId LIKE :employeeId AND r.reimbursementPending LIKE 'f'")
-	public List<ReimbursementEntity> findByEmployeeId(@Param("employeeId") int employeeId);
-	
 	// VIEW ALL PENDING REQUESTS OR ALL RESOLVED REQUESTS
 	public List<ReimbursementEntity> findByReimbursementPending(boolean reimbursementPending);
 	
+	// VIEW ALL PENDING REQUESTS AND RESOLVED REQUESTS FOR A SINGLE EMPLOYEE
+	@Query("FROM ReimbursementEntity r WHERE r.employeeEntity.employeeId LIKE :employeeId")
+	public List<ReimbursementEntity> findByEmployeeId(@Param("employeeId") int employeeId);
+
 }
