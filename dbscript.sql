@@ -32,12 +32,14 @@ CREATE TABLE resolved_reimbursements(resolved_reimbursement_id INT GENERATED ALW
                             request_approved BOOLEAN, 
                             date_resolved DATE NOT NULL DEFAULT CURRENT_DATE,
                             PRIMARY KEY(reimbursement_id));
-                            
-CREATE TABLE image_details(image_id INT GENERATED ALWAYS AS IDENTITY (START WITH 100 INCREMENT BY 1), 
+                           
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp"; 
+CREATE TABLE image_details(image_id UUID DEFAULT uuid_generate_v4 (), 
 							reimbursement_id INT,
-							image_name VARCHAR(20),
-							image_type VARCHAR(20),
-							image_data BYTEA,
+							image_name VARCHAR(255),
+							image_type VARCHAR(255),
+							image_data OID,
+							image_size BIGINT
 							PRIMARY KEY(image_id));
 							
 

@@ -2,8 +2,6 @@ package com.ers.ExpenseManagementSystemSpring.service;
 
 import com.ers.ExpenseManagementSystemSpring.pojo.ManagerPojo;
 
-import exceptions.SystemException;
-
 
 public interface ManagerService {
 	
