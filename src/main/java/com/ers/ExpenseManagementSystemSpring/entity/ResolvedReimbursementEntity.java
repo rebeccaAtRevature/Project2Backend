@@ -9,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.springframework.data.annotation.CreatedDate;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,6 +35,7 @@ public class ResolvedReimbursementEntity {
 	private boolean requestApproved;
 
 	@Column(name = "date_resolved")
+	@CreatedDate
 	private String dateResolved;
 	
 	public ResolvedReimbursementEntity( boolean requestApproved2) {

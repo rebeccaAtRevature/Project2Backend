@@ -10,6 +10,6 @@ import com.ers.ExpenseManagementSystemSpring.entity.ImageEntity;
 @Repository
 public interface ImageDao extends JpaRepository<ImageEntity, Integer>{
 
-	Optional<ImageEntity> findById(String imageId);
+	Optional<ImageEntity> findByImageId(String imageId);
 
 }
