@@ -43,7 +43,7 @@ public class ReimbursementEntity {
 	@OneToOne(mappedBy = "reimbursementEntity")
 	private ResolvedReimbursementEntity resolvedReimbursementEntity;
 	
-	@OneToOne(mappedBy = "imageEntity")
+	@OneToOne(mappedBy = "reimbursementEntity")
 	private ImageEntity imageEntity;
 	
 	// Constructor for adding Pending Requests

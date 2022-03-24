@@ -29,22 +29,21 @@ public class ManagerServiceImpl implements ManagerService {
 		if (loginAttempt.getManagerPassword().equals(managerPassword)) {
 			managerPojo = loginAttempt;
 		}
-		
 		log.info("Exiting managerLogin() in Service Layer");
 		return managerPojo;
 	}
 
 	@Override
 	public ManagerPojo fetchManager(int managerId) {
-		log.info("Exiting fetchManager() in Service Layer");
+		log.info("Entering fetchManager() in Service Layer");
 		Optional<ManagerEntity> optional = managerDao.findById(managerId);
-		ManagerPojo ManagerPojo = null;
+		ManagerPojo managerPojo = null;
 		if (optional.isPresent()) {
 			ManagerEntity managerEntity = optional.get();
-			ManagerPojo = new ManagerPojo(managerEntity.getManagerId(), managerEntity.getManagerFirstName(),managerEntity.getManagerLastName(),managerEntity.getManagerPhoneNumber(),managerEntity.getManagerAddress(),managerEntity.getManagerPassword(),managerEntity.getManagerImageUrl());
+			managerPojo = new ManagerPojo(managerEntity.getManagerId(), managerEntity.getManagerFirstName(),managerEntity.getManagerLastName(),managerEntity.getManagerPhoneNumber(),managerEntity.getManagerAddress(),managerEntity.getManagerPassword(),managerEntity.getManagerImageUrl());
 		}
 		log.info("Exiting fetchManager() in Service Layer");
-		return null;
+		return managerPojo;
 	}
 	
 }
