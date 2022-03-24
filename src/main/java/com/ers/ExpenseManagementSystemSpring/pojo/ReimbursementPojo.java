@@ -1,5 +1,7 @@
 package com.ers.ExpenseManagementSystemSpring.pojo;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,36 +18,29 @@ public class ReimbursementPojo {
 	private boolean requestApproved;
 	private String dateOfRequest;
 	private String dateResolved;
-	private int imageId;
-	private String imageName;
-	private String imageType;
-	private byte[] imageData;
+	private MultipartFile reimbursementUpload;
+	private ImagePojo reimbursementImage;
 	
 
 	// Constructor for adding Pending Requests
 	public ReimbursementPojo(int requestingEmployeeId, double reimbursementAmount, boolean reimbursementPending,
-			String imageName, String imageType, byte[] imageData) {
+			ImagePojo reimbursementImage) {
 		this.requestingEmployeeId = requestingEmployeeId;
 		this.reimbursementAmount = reimbursementAmount;
 		this.reimbursementPending = reimbursementPending;
-		this.imageName = imageName;
-		this.imageType = imageType;
-		this.imageData = imageData;
+		this.reimbursementImage = reimbursementImage;
+		
 	}
 		
 	// Constructor for Returning Pending Requests
 	public ReimbursementPojo(int reimbursementId, int requestingEmployeeId, double reimbursementAmount,
-			boolean reimbursementPending, String dateOfRequest, int imageId, String imageName, String imageType,
-			byte[] imageData) {
+			boolean reimbursementPending, String dateOfRequest, ImagePojo reimbursementImage) {
 		this.reimbursementId = reimbursementId;
 		this.requestingEmployeeId = requestingEmployeeId;
 		this.reimbursementAmount = reimbursementAmount;
 		this.reimbursementPending = reimbursementPending;
 		this.dateOfRequest = dateOfRequest;
-		this.imageId = imageId;
-		this.imageName = imageName;
-		this.imageType = imageType;
-		this.imageData = imageData;
+		this.reimbursementImage = reimbursementImage;
 	}
 	
 	// Constructor for adding Resolved Requests
@@ -53,5 +48,22 @@ public class ReimbursementPojo {
 		this.reimbursementId = reimbursementId;
 		this.requestApproved = requestApproved;
 	}
+
+
+	// Constructor for returning Pending Requests
+	public ReimbursementPojo(int reimbursementId, int resolvedReimbursementId, int requestingEmployeeId,
+			double reimbursementAmount, boolean reimbursementPending, boolean requestApproved, String dateOfRequest,
+			String dateResolved, ImagePojo reimbursementImage) {
+		this.reimbursementId = reimbursementId;
+		this.resolvedReimbursementId = resolvedReimbursementId;
+		this.requestingEmployeeId = requestingEmployeeId;
+		this.reimbursementAmount = reimbursementAmount;
+		this.reimbursementPending = reimbursementPending;
+		this.requestApproved = requestApproved;
+		this.dateOfRequest = dateOfRequest;
+		this.dateResolved = dateResolved;
+		this.reimbursementImage = reimbursementImage;
+	}
+	
 	
 }
