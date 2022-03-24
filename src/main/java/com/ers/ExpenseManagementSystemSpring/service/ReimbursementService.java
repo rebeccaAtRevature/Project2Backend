@@ -2,11 +2,12 @@ package com.ers.ExpenseManagementSystemSpring.service;
 
 import java.util.List;
 
+import com.ers.ExpenseManagementSystemSpring.exception.SystemException;
 import com.ers.ExpenseManagementSystemSpring.pojo.ReimbursementPojo;
 
 public interface ReimbursementService {
 	// SUBMIT A REIMBURSEMENT REQUEST
-	public ReimbursementPojo submitRequest(ReimbursementPojo reimbursementPojo);
+	public ReimbursementPojo submitRequest(ReimbursementPojo reimbursementPojo) throws SystemException;
 	// ADD TO RESOLVED REIMBURSEMENTS TABLE
 	public ReimbursementPojo addResolvedRequest(ReimbursementPojo reimbursementPojo) ;
 	// UPDATE REIMBURSEMENTS TABLE

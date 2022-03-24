@@ -3,6 +3,8 @@ package com.ers.ExpenseManagementSystemSpring.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ers.ExpenseManagementSystemSpring.exception.SystemException;
 import com.ers.ExpenseManagementSystemSpring.pojo.ReimbursementPojo;
 import com.ers.ExpenseManagementSystemSpring.service.ReimbursementService;
 
@@ -24,8 +27,15 @@ public class ReimbursementController {
 	
 	// SUBMIT A REIMBURSEMENT REQUEST
     @PostMapping("reimbursements")
-    ReimbursementPojo submitRequest(@RequestBody ReimbursementPojo reimbursementPojo) {
-        return reimbursementService.submitRequest(reimbursementPojo);
+    ResponseEntity<String> submitRequest(@RequestBody ReimbursementPojo reimbursementPojo) {
+        try {
+        	reimbursementService.submitRequest(reimbursementPojo);
+			return ResponseEntity.status(HttpStatus.OK)
+                    .body(String.format("File uploaded successfully: %s", reimbursementPojo.getReimbursementUpload().getOriginalFilename()));
+		} catch (SystemException e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(String.format("Could not upload the file: %s!", reimbursementPojo.getReimbursementUpload().getOriginalFilename()));
+		}
     }
     // VIEW PENDING REIMBUSEMENT REQUEST FOR LOGGED IN EMPLOYEE
     @GetMapping("p-reimbursements/{employeeId}")

@@ -15,7 +15,7 @@ public interface ReimbursementDao extends JpaRepository<ReimbursementEntity, Int
 	// VIEW PENDING REIMBUSEMENT REQUEST FOR LOGGED IN EMPLOYEE
 	@Query("FROM ReimbursementEntity r WHERE r.employeeEntity.employeeId LIKE :employeeId AND r.reimbursementPending LIKE 't'")
 	public List<ReimbursementEntity> viewPendingRequests(@Param("employeeId") int employeeId);
-	
+
 	// VIEW ALL PENDING REQUESTS OR ALL RESOLVED REQUESTS
 	public List<ReimbursementEntity> findByReimbursementPending(boolean reimbursementPending);
 	

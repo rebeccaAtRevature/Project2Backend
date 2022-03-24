@@ -4,8 +4,6 @@ import java.util.List;
 
 import com.ers.ExpenseManagementSystemSpring.pojo.EmployeePojo;
 
-import exceptions.SystemException;
-
 public interface EmployeeService {
 	
 	// LOGIN

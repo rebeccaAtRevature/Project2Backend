@@ -6,12 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ers.ExpenseManagementSystemSpring.dao.ManagerDao;
-import com.ers.ExpenseManagementSystemSpring.entity.EmployeeEntity;
 import com.ers.ExpenseManagementSystemSpring.entity.ManagerEntity;
-import com.ers.ExpenseManagementSystemSpring.pojo.EmployeePojo;
 import com.ers.ExpenseManagementSystemSpring.pojo.ManagerPojo;
 
-import exceptions.SystemException;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
