@@ -149,7 +149,7 @@ public class ReimbursementServiceImpl implements ReimbursementService {
 					reimbursementEntity.isReimbursementPending(),
 					reimbursementEntity.getDateOfRequest(),
 					imageService.getImage(reimbursementEntity.getImageEntity().getImageId())
-					);
+			);
 		}
 		log.info("Exiting readPendingRequest() in Service Layer");
 		return reimbursementPojo;

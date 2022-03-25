@@ -1,4 +1,4 @@
-version: '3'
+version: '2'
 services:
   my-postgres:
     image: postgres
@@ -8,13 +8,26 @@ services:
       - POSTGRES_PASSWORD=mysecretpassword
     volumes:
       - ./dbscript.sql:/docker-entrypoint-initdb.d/create_tables.sql
-  javalin-backend-service:
-    image: javalin-backend
-    build: .
-    ports:
-      - 9999:4040
-    depends_on:
-      - my-postgres
-    links:
-      - my-postgres
- 
+  message-server:
+        container_name: message-server
+        build:
+            context: docker-message-server
+            dockerfile: Dockerfile
+        image: message-server:latest
+        ports:
+            - 18888:8888
+        networks:
+            - spring-cloud-network
+  product-server:
+        container_name: product-server
+        build:
+            context: docker-product-server
+            dockerfile: Dockerfile
+        image: product-server:latest
+        ports:
+            - 19999:9999
+        networks:
+            - spring-cloud-network
+networks:
+    spring-cloud-network:
+        driver: bridge
