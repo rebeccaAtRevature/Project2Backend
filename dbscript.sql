@@ -39,7 +39,7 @@ CREATE TABLE image_details(image_id UUID DEFAULT uuid_generate_v4 (),
 							image_name VARCHAR(255),
 							image_type VARCHAR(255),
 							image_data OID,
-							image_size BIGINT
+							image_size BIGINT,
 							PRIMARY KEY(image_id));
 							
 

@@ -56,7 +56,7 @@ public class ImageServiceImpl implements ImageService {
 
 	@Override
 	public ImagePojo getImage(String imageId) {
-		Optional<ImageEntity> optional = imageDao.findById(imageId);
+		Optional<ImageEntity> optional = imageDao.findByImageId(imageId);
 		ImagePojo imagePojo = null;
 		if (optional.isPresent()) {
 			ImageEntity imageEntity = optional.get();

@@ -13,14 +13,14 @@ import com.ers.ExpenseManagementSystemSpring.entity.ReimbursementEntity;
 public interface ReimbursementDao extends JpaRepository<ReimbursementEntity, Integer> {
 	
 	// VIEW PENDING REIMBUSEMENT REQUEST FOR LOGGED IN EMPLOYEE
-	@Query("FROM ReimbursementEntity r WHERE r.employeeEntity.employeeId LIKE :employeeId AND r.reimbursementPending LIKE 't'")
+	@Query("FROM ReimbursementEntity r WHERE r.employeeEntity.employeeId=:employeeId AND r.reimbursementPending='t'")
 	public List<ReimbursementEntity> viewPendingRequests(@Param("employeeId") int employeeId);
 
 	// VIEW ALL PENDING REQUESTS OR ALL RESOLVED REQUESTS
 	public List<ReimbursementEntity> findByReimbursementPending(boolean reimbursementPending);
 	
 	// VIEW ALL PENDING REQUESTS AND RESOLVED REQUESTS FOR A SINGLE EMPLOYEE
-	@Query("FROM ReimbursementEntity r WHERE r.employeeEntity.employeeId LIKE :employeeId")
+	@Query("FROM ReimbursementEntity r WHERE r.employeeEntity.employeeId=:employeeId")
 	public List<ReimbursementEntity> findByEmployeeId(@Param("employeeId") int employeeId);
 
 }
