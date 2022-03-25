@@ -13,8 +13,10 @@ pipeline {
 			steps {
 			
 				withMaven( maven: 'springversion' ) //  links to config in Jinkins to the maven version
-	   			 
-				sh 'mvn clean package'
+	   			 { 
+	   			 	sh 'mvn clean package'
+	   			 }
+				
 			}
 		}
 		
