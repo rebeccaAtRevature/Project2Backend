@@ -1,5 +1,8 @@
 package com.ers.ExpenseManagementSystemSpring.entity;
 
+import java.util.Date;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -41,7 +44,7 @@ public class ReimbursementEntity {
 
 	@Column(name = "date_of_request")
 	@CreatedDate
-	private String dateOfRequest;
+	private Date dateOfRequest;
 	
 	@OneToOne(mappedBy = "reimbursementEntity")
 	private ResolvedReimbursementEntity resolvedReimbursementEntity;
@@ -60,11 +63,11 @@ public class ReimbursementEntity {
 		this.reimbursementId = reimbursementId;
 	}
 
-	public ReimbursementEntity(int reimbursementId, int employeeId, double reimbursementAmount,
-			boolean reimbursementPending, String dateOfRequest) {
+	public ReimbursementEntity(int reimbursementId, EmployeeEntity employeeEntity, double reimbursementAmount,
+			boolean reimbursementPending, Date dateOfRequest) {
 		super();
 		this.reimbursementId = reimbursementId;
-		this.employeeEntity = new EmployeeEntity(employeeId);
+		this.employeeEntity = employeeEntity;
 		this.reimbursementAmount = reimbursementAmount;
 		this.reimbursementPending = reimbursementPending;
 		this.dateOfRequest = dateOfRequest;
