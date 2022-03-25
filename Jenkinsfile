@@ -19,6 +19,8 @@ pipeline {
 		stage ('Staging') {
 			steps {
 				sh 'docker-compose down'
+				sh 'docker rm -f $(docker ps -a -q)'
+				sh 'docker volume rm $(docker volume ls -q)'
 				sh 'docker-compose up'
 			}
 		}
