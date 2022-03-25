@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ImagePojo {
 	
-	private String imageId;
+	private int imageId;
 	private String imageName;
 	private String imageType;
 	private Long imageSize;

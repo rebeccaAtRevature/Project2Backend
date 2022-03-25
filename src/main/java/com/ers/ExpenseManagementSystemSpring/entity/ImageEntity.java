@@ -1,8 +1,10 @@
 package com.ers.ExpenseManagementSystemSpring.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -23,11 +25,10 @@ import lombok.NoArgsConstructor;
 public class ImageEntity {
 	
 	@Id
-	@GeneratedValue(generator = "uuid")
-	@GenericGenerator(name = "uuid", strategy = "uuid2")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "image_id")
-	private String imageId;
-	@OneToOne
+	private int imageId;
+	@OneToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name = "reimbursement_id")
 	private ReimbursementEntity reimbursementEntity;
 	@Column(name = "image_name")
