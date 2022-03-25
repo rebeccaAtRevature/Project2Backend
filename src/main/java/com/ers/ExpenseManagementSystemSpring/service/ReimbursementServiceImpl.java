@@ -8,7 +8,9 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.ers.ExpenseManagementSystemSpring.dao.EmployeeDao;
 import com.ers.ExpenseManagementSystemSpring.dao.ReimbursementDao;
 import com.ers.ExpenseManagementSystemSpring.dao.ResolvedReimbursementDao;
 import com.ers.ExpenseManagementSystemSpring.entity.EmployeeEntity;
@@ -31,14 +33,18 @@ public class ReimbursementServiceImpl implements ReimbursementService {
 	ResolvedReimbursementDao resolvedReimbursementDao;
 	@Autowired
 	ImageService imageService;
+	@Autowired
+	EmployeeDao employeeDao;
 	
 	// SUBMIT A REIMBURSEMENT REQUEST
 	@Transactional
-	public ReimbursementPojo submitRequest(ReimbursementPojo reimbursementPojo) throws SystemException {
+	public ReimbursementPojo submitRequest(ReimbursementPojo reimbursementPojo, MultipartFile reimbursementUpload) throws SystemException {
 		log.info("Entering submitRequest() in Service Layer");
-		ReimbursementEntity reimbursementEntity = new ReimbursementEntity(new EmployeeEntity(reimbursementPojo.getRequestingEmployeeId()),reimbursementPojo.getReimbursementAmount(),reimbursementPojo.isReimbursementPending());
-		reimbursementDao.saveAndFlush(reimbursementEntity);
-		ImagePojo imagePojo = imageService.save(reimbursementPojo.getReimbursementUpload());
+		System.out.println(reimbursementPojo.getRequestingEmployeeId());
+		EmployeeEntity employeeEntity = employeeDao.getById(reimbursementPojo.getRequestingEmployeeId());
+		ReimbursementEntity reimbursementEntity = new ReimbursementEntity(employeeEntity,reimbursementPojo.getReimbursementAmount(),reimbursementPojo.isReimbursementPending());
+		reimbursementDao.save(reimbursementEntity);
+		ImagePojo imagePojo = imageService.save(reimbursementUpload,reimbursementEntity);
 		ReimbursementPojo returnReimbursementPojo = new ReimbursementPojo(reimbursementEntity.getReimbursementId(), 
 				reimbursementEntity.getEmployeeEntity().getEmployeeId(), 
 				reimbursementEntity.getReimbursementAmount(),
@@ -51,9 +57,11 @@ public class ReimbursementServiceImpl implements ReimbursementService {
 	}
 	// ADD TO RESOLVED REIMBURSEMENTS TABLE
 	@Override
+	@Transactional
 	public ReimbursementPojo addResolvedRequest(ReimbursementPojo reimbursementPojo) {
 		log.info("Entering addResolvedRequest() in Service Layer");
-		ResolvedReimbursementEntity resolvedReimbursementEntity = new ResolvedReimbursementEntity(reimbursementPojo.getReimbursementId(),reimbursementPojo.isRequestApproved());
+		ReimbursementEntity reimbursementEntity = reimbursementDao.getById(reimbursementPojo.getReimbursementId());
+		ResolvedReimbursementEntity resolvedReimbursementEntity = new ResolvedReimbursementEntity(reimbursementEntity,reimbursementPojo.isRequestApproved());
 		resolvedReimbursementDao.saveAndFlush(resolvedReimbursementEntity);
 		ReimbursementPojo returnReimbursementPojo = new ReimbursementPojo( resolvedReimbursementEntity.getReimbursementEntity().getReimbursementId(),
 				resolvedReimbursementEntity.getResolvedReimbursementId(),
@@ -69,9 +77,11 @@ public class ReimbursementServiceImpl implements ReimbursementService {
 	}
 	// UPDATE REIMBURSEMENTS TABLE
 	@Override
+	@Transactional
 	public ReimbursementPojo updatePendingRequest(ReimbursementPojo reimbursementPojo) {
 		log.info("Entered updatePendingRequest() in Service Layer");
-		ReimbursementEntity reimbursementEntity = new ReimbursementEntity(reimbursementPojo.getReimbursementId(), reimbursementPojo.getRequestingEmployeeId(),reimbursementPojo.getReimbursementAmount(),false,reimbursementPojo.getDateOfRequest());
+		EmployeeEntity employeeEntity = employeeDao.getById(reimbursementPojo.getRequestingEmployeeId());
+		ReimbursementEntity reimbursementEntity = new ReimbursementEntity(reimbursementPojo.getReimbursementId(),employeeEntity,reimbursementPojo.getReimbursementAmount(),false,reimbursementPojo.getDateOfRequest());
 		reimbursementDao.save(reimbursementEntity);
 		ReimbursementPojo returnReimbursementPojo= new ReimbursementPojo(reimbursementEntity.getReimbursementId(), 
 				reimbursementEntity.getEmployeeEntity().getEmployeeId(), 
@@ -84,11 +94,12 @@ public class ReimbursementServiceImpl implements ReimbursementService {
 	}
 	// VIEW PENDING REIMBUSEMENT REQUEST FOR LOGGED IN EMPLOYEE
 	@Override
+	@Transactional
 	public List<ReimbursementPojo> viewPendingRequests(int employeeId) {
 		log.info("Entering viewPendingRequests in Service Layer");
 		List<ReimbursementPojo> allPendingRequestPojo = new ArrayList<ReimbursementPojo>();
 		List<ReimbursementEntity> allPendingRequestEntity = reimbursementDao.viewPendingRequests(employeeId);
-		allPendingRequestEntity.forEach((reimbursementEntity) -> {
+		allPendingRequestEntity.forEach(reimbursementEntity -> {
 			ReimbursementPojo reimbursementPojo= new ReimbursementPojo(reimbursementEntity.getReimbursementId(), 
 					reimbursementEntity.getEmployeeEntity().getEmployeeId(), 
 					reimbursementEntity.getReimbursementAmount(),
@@ -102,11 +113,12 @@ public class ReimbursementServiceImpl implements ReimbursementService {
 	}
 	// VIEW RESOLVED REIMBURSEMENT REQUESTS FOR LOGGED IN EMPLOYEE
 	@Override
+	@Transactional
 	public List<ReimbursementPojo> viewResolvedRequests(int employeeId) {
 		log.info("Entering viewResolvedRequests in Service Layer");
 		List<ReimbursementPojo> allResolvedRequestPojo = new ArrayList<ReimbursementPojo>();
 		List<ResolvedReimbursementEntity> allResolvedRequestEntity = resolvedReimbursementDao.viewResolvedRequests(employeeId);
-		allResolvedRequestEntity.forEach((resolvedReimbursementEntity) -> {
+		allResolvedRequestEntity.forEach(resolvedReimbursementEntity -> {
 			ReimbursementPojo reimbursementPojo = new ReimbursementPojo( resolvedReimbursementEntity.getReimbursementEntity().getReimbursementId(),
 					resolvedReimbursementEntity.getResolvedReimbursementId(),
 					resolvedReimbursementEntity.getReimbursementEntity().getEmployeeEntity().getEmployeeId(), 
@@ -124,6 +136,7 @@ public class ReimbursementServiceImpl implements ReimbursementService {
 	}
 	// READ A SPECIFIC PENDING REIMBURSEMENT FROM TABLE
 	@Override
+	@Transactional
 	public ReimbursementPojo readPendingRequest(int reimbursementId) {
 		log.info("Entering readPendingRequest() in Service Layer");
 		Optional<ReimbursementEntity> optional = reimbursementDao.findById(reimbursementId);
@@ -143,11 +156,12 @@ public class ReimbursementServiceImpl implements ReimbursementService {
 	}
 	// READ ALL VALUES FROM PENDING REQUESTS TABLE
 	@Override
+	@Transactional
 	public List<ReimbursementPojo> viewAllPendingRequests() {
 		log.info("Entering viewAllPendingRequests() in Service Layer");
 		List<ReimbursementPojo> allPendingRequestPojo = new ArrayList<ReimbursementPojo>();
 		List<ReimbursementEntity> allPendingRequestEntity = reimbursementDao.findByReimbursementPending(true);
-		allPendingRequestEntity.forEach((reimbursementEntity) -> {
+		allPendingRequestEntity.forEach(reimbursementEntity -> {
 			ReimbursementPojo reimbursementPojo= new ReimbursementPojo(reimbursementEntity.getReimbursementId(), 
 					reimbursementEntity.getEmployeeEntity().getEmployeeId(), 
 					reimbursementEntity.getReimbursementAmount(),
@@ -162,10 +176,12 @@ public class ReimbursementServiceImpl implements ReimbursementService {
 	}
 	// READ ALL VALUES FROM RESOLVED REQUESTS TABLE
 	@Override
+	@Transactional
 	public List<ReimbursementPojo> viewAllResolvedRequests() {
+		log.info("Entering viewAllResolvedRequests() in Service Layer");
 		List<ReimbursementPojo> allResolvedRequestPojo = new ArrayList<ReimbursementPojo>();
 		List<ReimbursementEntity> allResolvedRequestEntity = reimbursementDao.findByReimbursementPending(false);
-		allResolvedRequestEntity.forEach((reimbursementEntity) -> {
+		allResolvedRequestEntity.forEach(reimbursementEntity -> {
 			ReimbursementPojo reimbursementPojo = new ReimbursementPojo( reimbursementEntity.getReimbursementId(),
 					reimbursementEntity.getResolvedReimbursementEntity().getResolvedReimbursementId(),
 					reimbursementEntity.getEmployeeEntity().getEmployeeId(), 
@@ -178,15 +194,18 @@ public class ReimbursementServiceImpl implements ReimbursementService {
 					);
 			allResolvedRequestPojo.add(reimbursementPojo);
 		});
+		log.info("Exiting viewAllResolvedRequests() in Service Layer");
 		return allResolvedRequestPojo;
 	}
 
 	// READ ALL PENDING AND RESOLVED REIMBURSEMENTS FOR ANY SINGLE EMPLOYEE
 	@Override
+	@Transactional
 	public List<ReimbursementPojo> viewAllRequests(int employeeId) {
+		log.info("Entering viewAllRequests() in Service Layer");
 		List<ReimbursementPojo> allRequestPojo = new ArrayList<ReimbursementPojo>();
 		List<ReimbursementEntity> allRequestEntity = reimbursementDao.findByEmployeeId(employeeId);
-		allRequestEntity.forEach((reimbursementEntity) -> {
+		allRequestEntity.forEach(reimbursementEntity -> {
 			ReimbursementPojo reimbursementPojo = new ReimbursementPojo( reimbursementEntity.getReimbursementId(),
 					reimbursementEntity.getResolvedReimbursementEntity().getResolvedReimbursementId(),
 					reimbursementEntity.getEmployeeEntity().getEmployeeId(), 
@@ -199,19 +218,22 @@ public class ReimbursementServiceImpl implements ReimbursementService {
 					);
 			allRequestPojo.add(reimbursementPojo);
 		});
+		log.info("Exiting viewAllRequests() in Service Layer");
 		return allRequestPojo;
 	}
 	// APPROVE OR DENY PENDING REIMBURSEMENT REQUESTS
 	@Override
 	@Transactional
 	public ReimbursementPojo approveOrDeny(ReimbursementPojo reimbursementPojo) {
+		log.info("Entering approveOrDeny() in Service Layer");
 		
 		// add to resolved request table
-		ReimbursementPojo returnReimbursement = addResolvedRequest(reimbursementPojo);
+		addResolvedRequest(reimbursementPojo);
 		
 		// update reimbursement details table
-		returnReimbursement = updatePendingRequest(reimbursementPojo);
+		ReimbursementPojo returnReimbursement = updatePendingRequest(reimbursementPojo);
 		
+		log.info("Exiting approveOrDeny() in Service Layer");
 		return returnReimbursement;
 	}
 }
