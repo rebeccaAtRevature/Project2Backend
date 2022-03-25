@@ -1,6 +1,6 @@
 package com.ers.ExpenseManagementSystemSpring.pojo;
 
-import org.springframework.web.multipart.MultipartFile;
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,9 +16,8 @@ public class ReimbursementPojo {
 	private double reimbursementAmount;
 	private boolean reimbursementPending;
 	private boolean requestApproved;
-	private String dateOfRequest;
-	private String dateResolved;
-	private MultipartFile reimbursementUpload;
+	private Date dateOfRequest;
+	private Date dateResolved;
 	private ImagePojo reimbursementImage;
 	
 
@@ -34,7 +33,7 @@ public class ReimbursementPojo {
 		
 	// Constructor for Returning Pending Requests
 	public ReimbursementPojo(int reimbursementId, int requestingEmployeeId, double reimbursementAmount,
-			boolean reimbursementPending, String dateOfRequest, ImagePojo reimbursementImage) {
+			boolean reimbursementPending, Date dateOfRequest, ImagePojo reimbursementImage) {
 		this.reimbursementId = reimbursementId;
 		this.requestingEmployeeId = requestingEmployeeId;
 		this.reimbursementAmount = reimbursementAmount;
@@ -47,22 +46,6 @@ public class ReimbursementPojo {
 	public ReimbursementPojo(int reimbursementId, boolean requestApproved) {		
 		this.reimbursementId = reimbursementId;
 		this.requestApproved = requestApproved;
-	}
-
-
-	// Constructor for returning Pending Requests
-	public ReimbursementPojo(int reimbursementId, int resolvedReimbursementId, int requestingEmployeeId,
-			double reimbursementAmount, boolean reimbursementPending, boolean requestApproved, String dateOfRequest,
-			String dateResolved, ImagePojo reimbursementImage) {
-		this.reimbursementId = reimbursementId;
-		this.resolvedReimbursementId = resolvedReimbursementId;
-		this.requestingEmployeeId = requestingEmployeeId;
-		this.reimbursementAmount = reimbursementAmount;
-		this.reimbursementPending = reimbursementPending;
-		this.requestApproved = requestApproved;
-		this.dateOfRequest = dateOfRequest;
-		this.dateResolved = dateResolved;
-		this.reimbursementImage = reimbursementImage;
 	}
 	
 	

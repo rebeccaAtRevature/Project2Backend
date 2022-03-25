@@ -13,6 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.ers.ExpenseManagementSystemSpring.dao.ImageDao;
 import com.ers.ExpenseManagementSystemSpring.entity.ImageEntity;
+import com.ers.ExpenseManagementSystemSpring.entity.ReimbursementEntity;
 import com.ers.ExpenseManagementSystemSpring.exception.SystemException;
 import com.ers.ExpenseManagementSystemSpring.pojo.ImagePojo;
 
@@ -31,41 +32,39 @@ public class ImageServiceImpl implements ImageService {
     }
     
     @Override
-    public ImagePojo save(MultipartFile reimbursementUpload) throws SystemException {
+    public ImagePojo save(MultipartFile reimbursementUpload, ReimbursementEntity reimbursementEntity) throws SystemException {
+    	log.info("Entering save in Image Service Layer");
     	ImageEntity imageEntity = null;
     	try {
-    		imageEntity = new ImageEntity();
-    		imageEntity.setImageName(StringUtils.cleanPath(reimbursementUpload.getOriginalFilename()));
-    		imageEntity.setImageType(reimbursementUpload.getContentType());
-    		imageEntity.setImageData(reimbursementUpload.getBytes());
-    		imageEntity.setImageSize(reimbursementUpload.getSize());
+    		imageEntity = new ImageEntity(reimbursementEntity,StringUtils.cleanPath(reimbursementUpload.getOriginalFilename()),reimbursementUpload.getContentType(),reimbursementUpload.getSize(),reimbursementUpload.getBytes());
     	} catch (IOException e) {
     		throw new SystemException();
     	}
         
-        imageDao.saveAndFlush(imageEntity);
+        imageDao.save(imageEntity);
         
         String downloadURL = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/")
-                .path(imageEntity.getImageId())
+                .path(""+imageEntity.getImageId()+"")
                 .toUriString();
-        ImagePojo imagePojo = new ImagePojo(imageEntity.getImageId(),imageEntity.getImageName(),imageEntity.getImageType(),imageEntity.getImageSize(),downloadURL,imageEntity.getImageData());
-        
-        return imagePojo;
+        log.info("Exiting save in Image Service Layer");
+        return new ImagePojo(imageEntity.getImageId(),imageEntity.getImageName(),imageEntity.getImageType(),imageEntity.getImageSize(),downloadURL,imageEntity.getImageData());
     }
 
 	@Override
-	public ImagePojo getImage(String imageId) {
-		Optional<ImageEntity> optional = imageDao.findByImageId(imageId);
+	public ImagePojo getImage(int imageId) {
+		log.info("Entering getImage in Image Service Layer");
+		Optional<ImageEntity> optional = imageDao.findById(imageId);
 		ImagePojo imagePojo = null;
 		if (optional.isPresent()) {
 			ImageEntity imageEntity = optional.get();
 			String downloadURL = ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/api/")
-                    .path(imageEntity.getImageId())
+                    .path("/api/images/")
+                    .path(""+imageEntity.getImageId()+"")
                     .toUriString();
 			imagePojo = new ImagePojo(imageEntity.getImageId(),imageEntity.getImageName(),imageEntity.getImageType(),imageEntity.getImageSize(),downloadURL,imageEntity.getImageData());
 		}
+		log.info("Exiting getImage in Image Service Layer");
 		return imagePojo;
 	}
 
@@ -80,9 +79,9 @@ public class ImageServiceImpl implements ImageService {
 	}
 	
 	private ImagePojo mapToImagePojo(ImageEntity imageEntity) {
-        String downloadURL = ServletUriComponentsBuilder.fromCurrentContextPath()
+		String downloadURL = ServletUriComponentsBuilder.fromCurrentContextPath()
                                                         .path("/api/")
-                                                        .path(imageEntity.getImageId())
+                                                        .path(""+imageEntity.getImageId()+"")
                                                         .toUriString();
         ImagePojo imagePojo = new ImagePojo();
         imagePojo.setImageId(imageEntity.getImageId());
