@@ -12,7 +12,7 @@ import com.ers.ExpenseManagementSystemSpring.entity.ResolvedReimbursementEntity;
 @Repository
 public interface ResolvedReimbursementDao extends JpaRepository<ResolvedReimbursementEntity, Integer>{
 	// VIEW RESOLVED REIMBURSEMENT REQUESTS FOR LOGGED IN EMPLOYEE
-	@Query("FROM ReimbursementEntity r WHERE r.employeeEntity.employeeId LIKE :employeeId AND r.reimbursementPending LIKE 'f'")
+	@Query("FROM ReimbursementEntity r WHERE r.employeeEntity.employeeId=:employeeId AND r.reimbursementPending='f'")
 	public List<ResolvedReimbursementEntity> viewResolvedRequests(@Param("employeeId") int employeeId);
 		
 }
