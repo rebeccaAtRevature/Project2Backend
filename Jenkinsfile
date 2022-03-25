@@ -1,5 +1,6 @@
 pipeline {
 	agent any
+
 	stages {
 		stage ('Clone Code') {
 			steps {
@@ -10,6 +11,9 @@ pipeline {
 		
 		stage ('Build Code') {
 			steps {
+			
+				withMaven( maven: 'springversion' ) //  links to config in Jinkins to the maven version
+	   			 
 				sh 'mvn clean package'
 			}
 		}
