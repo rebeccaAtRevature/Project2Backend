@@ -7,6 +7,7 @@ https://github.com/rebeccaAtRevature/Project1FrontEnd
 
 # Technologies Used
 Backend
+
 Java
 Maven
 Spring Framework
@@ -16,10 +17,12 @@ Slf4j
 Sonar Lint
 
 Frontend
+
 Angular 2+
 Jasmine and Karma
 
 DevOps
+
 Jenkins
 Docker
 AWS S3
